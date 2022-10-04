@@ -42,6 +42,20 @@ button{
   align-items: center;
   justify-content: center;
 }
+.pageImg1{
+  margin: 10px;
+  cursor: pointer;
+}
+.pageImg2{
+  margin: 10px;
+  cursor: pointer;
+  transform: rotate(180deg);
+}
+.vedio{
+  width: 80px;
+  margin: 10px;
+  background-color: rgb(97, 145, 187);
+}
 @media (min-width: 300px){
   .albumImg{
     width: 80px;
@@ -51,3 +65,4 @@ button{
     font-size: 0.8em;
   }
 }
+
