@@ -1,6 +1,6 @@
 .App {
+  margin-top: 50px;
   text-align: center;
-  height: 1000px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -47,7 +47,6 @@ button{
   cursor: pointer;
 }
 .pageImg2{
-  margin: 10px;
   cursor: pointer;
   transform: rotate(180deg);
 }
@@ -55,6 +54,29 @@ button{
   width: 80px;
   margin: 10px;
   background-color: rgb(97, 145, 187);
+}
+.blob{
+  z-index: 0;
+  position: absolute;
+  height: 60%;
+  width: 100%;
+  max-width: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.blob:nth-child(2){
+  filter: blur(50px);
+}
+.blobs{
+  margin: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+h5{
+  z-index: 2;
+  color: whitesmoke;
 }
 @media (min-width: 300px){
   .albumImg{
