@@ -1,5 +1,4 @@
 .App {
-  margin-top: 50px;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -74,9 +73,10 @@ button{
   justify-content: center;
   align-items: center;
 }
-h5{
+.blob-title{
   z-index: 2;
   color: whitesmoke;
+  font-size: 2rem;
 }
 @media (min-width: 300px){
   .albumImg{
