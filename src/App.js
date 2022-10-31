@@ -3,10 +3,164 @@ import { db } from "./firebase";
 import { uid } from "uid";
 import React from "react";
 import { set, ref, onValue, remove, update } from "firebase/database";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.css"; // or include from a CDN
 import "react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css";
-import RangeSlider from "react-bootstrap-range-slider";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import AnimatedProgressProvider from "./AnimatedProgressProvider";
+import useInterval from "@use-it/interval";
+import { easeQuadInOut } from "d3-ease";
+
+// Constants
+const VALID_CHARS = `abcdefghijklmnopqrstuvwxyz0123456789$+-*/=%"'#&_(),.;:?!\\|{}<>[]^~`;
+const STREAM_MUTATION_ODDS = 0.02;
+
+const MIN_STREAM_SIZE = 15;
+const MAX_STREAM_SIZE = 50;
+
+const MIN_INTERVAL_DELAY = 50;
+const MAX_INTERVAL_DELAY = 100;
+
+const MIN_DELAY_BETWEEN_STREAMS = 0;
+const MAX_DELAY_BETWEEN_STREAMS = 8000;
+
+const getRandInRange = (min, max) =>
+  Math.floor(Math.random() * (max - min)) + min;
+
+const getRandChar = () =>
+  VALID_CHARS.charAt(Math.floor(Math.random() * VALID_CHARS.length));
+
+const getRandStream = () =>
+  new Array(getRandInRange(MIN_STREAM_SIZE, MAX_STREAM_SIZE))
+    .fill()
+    .map((_) => getRandChar());
+
+const getMutatedStream = (stream) => {
+  const newStream = [];
+  for (let i = 1; i < stream.length; i++) {
+    if (Math.random() < STREAM_MUTATION_ODDS) {
+      newStream.push(getRandChar());
+    } else {
+      newStream.push(stream[i]);
+    }
+  }
+  newStream.push(getRandChar());
+  return newStream;
+};
+
+const RainStream = (props) => {
+  const [stream, setStream] = useState(getRandStream());
+  const [topPadding, setTopPadding] = useState(stream.length * -50);
+  const [intervalDelay, setIntervalDelay] = useState(null);
+
+  // Initialize intervalDelay
+  useEffect(() => {
+    setTimeout(() => {
+      setIntervalDelay(getRandInRange(MIN_INTERVAL_DELAY, MAX_INTERVAL_DELAY));
+    }, getRandInRange(MIN_DELAY_BETWEEN_STREAMS, MAX_DELAY_BETWEEN_STREAMS));
+  }, []);
+
+  useInterval(() => {
+    if (!props.height) return;
+
+    if (!intervalDelay) return;
+
+    // If stream is off the screen, reset it after timeout
+    if (topPadding > props.height) {
+      setStream([]);
+      const newStream = getRandStream();
+      setStream(newStream);
+      setTopPadding(newStream.length * -44);
+      setIntervalDelay(null);
+      setTimeout(
+        () =>
+          setIntervalDelay(
+            getRandInRange(MIN_INTERVAL_DELAY, MAX_INTERVAL_DELAY)
+          ),
+        getRandInRange(MIN_DELAY_BETWEEN_STREAMS, MAX_DELAY_BETWEEN_STREAMS)
+      );
+    } else {
+      setTopPadding(topPadding + 44);
+    }
+    // setStream(stream => [...stream.slice(1, stream.length), getRandChar()]);
+    setStream(getMutatedStream);
+  }, intervalDelay);
+
+  return (
+    <div
+      style={{
+        fontFamily: "matrixFont",
+        color: "#20c20e",
+        writingMode: "vertical-rl",
+        textOrientation: "upright",
+        userSelect: "none",
+        whiteSpace: "nowrap",
+        marginTop: topPadding,
+        marginLeft: -15,
+        marginRight: -15,
+        textShadow: "0px 0px 8px rgba(32, 194, 14, 0.8)",
+        fontSize: 30,
+      }}
+    >
+      {stream.map((char, index) => (
+        <a
+          style={{
+            marginTop: -12,
+            // Reduce opacity for last chars
+            opacity: index < 6 ? 0.1 + index * 0.15 : 1,
+            color: index === stream.length - 1 ? "#fff" : undefined,
+            textShadow:
+              index === stream.length - 1
+                ? "0px 0px 20px rgba(255, 255, 255, 1)"
+                : undefined,
+          }}
+        >
+          {char}
+        </a>
+      ))}
+    </div>
+  );
+};
+
+const MatrixRain = (props) => {
+  const containerRef = useRef(null);
+  const [containerSize, setContainerSize] = useState(null); // ?{width, height}
+
+  useEffect(() => {
+    const boundingClientRect = containerRef.current.getBoundingClientRect();
+    setContainerSize({
+      width: boundingClientRect.width,
+      height: boundingClientRect.height,
+    });
+  }, []);
+
+  const streamCount = containerSize ? Math.floor(containerSize.width / 26) : 0;
+
+  return (
+    <div
+      style={{
+        width: "460px",
+        height: "200px",
+        background: "#3d3d3d",
+        overflow: "ignore",
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-around",
+        overflow: "hidden",
+        borderRadius: "20px",
+      }}
+      ref={containerRef}
+    >
+      {new Array(streamCount).fill().map((_) => (
+        <RainStream height={containerSize?.height} />
+      ))}
+    </div>
+  );
+};
+
+const roundedValue1 = 78;
+const roundedValue2 = 56;
+const roundedValue3 = 52;
 
 function App() {
   const [video, setVideo] = useState("");
@@ -55,33 +209,136 @@ function App() {
         thePage,
       });
     };
+
     return (
-      <div className="col-class">
-        <h3>第一部分</h3>
-        <div className="row-class" style={{ marginBottom: "30px" }}>
-          <div style={{ marginRight: "10px" }}>頻率</div>
-          <RangeSlider
-            value={frequence}
-            onChange={(changeEvent) => {
-              setFrequence(changeEvent.target.value);
-            }}
-          />
+      <div className="ipadView">
+        <div className="row-class">
+          <div className="compass">
+            <div className="compass-inner">
+              <div className="north">N</div>
+              <div className="east">E</div>
+              <div className="west">W</div>
+              <div className="south">S</div>
+              <div className="main-arrow">
+                <div className="arrow-up"></div>
+                <div className="arrow-down"></div>
+              </div>
+            </div>
+          </div>
+          <MatrixRain />
+          <div className="ButtonGroups">
+            <div className="sosBtn"></div>
+            <h2 className="btntext">SOS</h2>
+          </div>
         </div>
         <div className="row-class">
-          <div style={{ marginRight: "10px" }}>聲音</div>
-          <RangeSlider
-            value={noise}
-            onChange={(changeEvent) => {
-              setNoise(changeEvent.target.value);
-            }}
-          />
+          <div className="col-class">
+            <div className="col-class">
+              <div className="row-class">
+                <div className="firstCircle">
+                  <AnimatedProgressProvider
+                    valueStart={0}
+                    valueEnd={66}
+                    duration={1.4}
+                    easingFunction={easeQuadInOut}
+                  >
+                    {(value) => {
+                      return (
+                        <CircularProgressbar
+                          value={value}
+                          text={`${roundedValue1}%`}
+                          styles={buildStyles({
+                            pathTransition: "none",
+                            textSize: "18px",
+                            pathColor: `rgba(67, 229, 247, ${
+                              roundedValue1 / 100
+                            })`,
+                            textColor: "#43e5f7",
+                            trailColor: "#6f6f6f",
+                            backgroundColor: "#6f6f6f",
+                          })}
+                        />
+                      );
+                    }}
+                  </AnimatedProgressProvider>
+                </div>
+                <div className="secondCircle">
+                  <AnimatedProgressProvider
+                    valueStart={0}
+                    valueEnd={66}
+                    duration={1.4}
+                    easingFunction={easeQuadInOut}
+                  >
+                    {(value) => {
+                      return (
+                        <CircularProgressbar
+                          value={value}
+                          text={`${roundedValue2}%`}
+                          styles={buildStyles({
+                            pathTransition: "none",
+                            textSize: "16px",
+                            pathTransitionDuration: 0.5,
+                            pathColor: `rgba(67, 229, 247, ${
+                              roundedValue2 / 100
+                            })`,
+                            textColor: "#43e5f7",
+                            trailColor: "#6f6f6f",
+                            backgroundColor: "#6f6f6f",
+                          })}
+                        />
+                      );
+                    }}
+                  </AnimatedProgressProvider>
+                </div>
+              </div>
+              <div className="thirdCircle">
+                <AnimatedProgressProvider
+                  valueStart={0}
+                  valueEnd={66}
+                  duration={1.4}
+                  easingFunction={easeQuadInOut}
+                >
+                  {(value) => {
+                    return (
+                      <CircularProgressbar
+                        value={value}
+                        text={`${roundedValue3}%`}
+                        styles={buildStyles({
+                          pathTransition: "none",
+                          textSize: "16px",
+                          pathTransitionDuration: 0.5,
+                          pathColor: `rgba(67, 229, 247, ${
+                            roundedValue3 / 100
+                          })`,
+                          textColor: "#43e5f7",
+                          trailColor: "#6f6f6f",
+                          backgroundColor: "#6f6f6f",
+                        })}
+                      />
+                    );
+                  }}
+                </AnimatedProgressProvider>
+              </div>
+            </div>
+
+            <div className="radar-box-area">
+              <div className="radar-box">
+                <div className="radar"></div>
+                <span className="gps_signal"></span>
+                <span className="gps_signal"></span>
+                <span className="gps_signal"></span>
+                <span className="gps_signal"></span>
+              </div>
+            </div>
+          </div>
+          <div className="controller">
+            <input type="range" className="slider slider1" />
+            <input type="range" className="slider slider2" />
+            <input type="range" className="slider slider3" />
+            <input type="range" className="slider slider4" />
+            <input type="range" className="slider slider5" />
+          </div>
         </div>
-        <img
-          className="pageImg1"
-          src="../Img/page.png"
-          onClick={handleChangePage}
-        />
-        <button onClick={handleSubmitChange}>Submit</button>
       </div>
     );
   };
@@ -706,3 +963,37 @@ function App() {
 }
 
 export default App;
+
+// <div className="col-class">
+//   <h3>第一部分</h3>
+//   <div className="row-class" style={{ marginBottom: "30px" }}>
+//     <div style={{ marginRight: "10px" }}>頻率</div>
+//     <RangeSlider
+//       value={frequence}
+//       onChange={(changeEvent) => {
+//         setFrequence(changeEvent.target.value);
+//       }}
+//     />
+//   </div>
+//   <div className="row-class">
+//     <div style={{ marginRight: "10px" }}>聲音</div>
+//     <RangeSlider
+//       value={noise}
+//       onChange={(changeEvent) => {
+//         setNoise(changeEvent.target.value);
+//       }}
+//     />
+//   </div>
+//   <img
+//     className="pageImg1"
+//     src="../Img/page.png"
+//     onClick={handleChangePage}
+//   />
+//   <button onClick={handleSubmitChange}>Submit</button>
+//   <audio controls autoplay>
+//     <source src="../Music/500.mp3" type="audio/mpeg" />
+//   </audio>
+//   <audio controls autoplay>
+//     <source src="../Music/JayChou.mp3" type="audio/mpeg" />
+//   </audio>
+// </div>
