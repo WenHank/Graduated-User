@@ -1,3 +1,8 @@
+body{
+  background-color: #2c2c2c;
+}
+
+
 @font-face{
   font-family: matrixFont;
   src: url(./matrix.ttf);
@@ -10,6 +15,8 @@
     -webkit-appearance: none;
     background-color: #6f6f6f;
     border-radius: 20px;
+    border: 4px solid rgb(218, 218, 218);
+    box-shadow: 1px 2px 12px 1px #a5a4a4;
   }
   
   input[type='range']::-webkit-slider-runnable-track {
@@ -39,6 +46,16 @@
 .thirdCircle{
   width: 130px;
 }
+.circleContainer{
+  margin: 10px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  box-shadow: 5px 5px 12px 1px #a5a4a4;
+}
 .ButtonGroups{
   width: 200px;
   height: 200px;
@@ -46,9 +63,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 20px;
+  box-shadow: 5px 5px 12px 1px #a5a4a4;
 }
 
 .sosBtn{
+  position: fixed;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -56,20 +76,19 @@
   height: 100px;
   border-radius: 50%;
   background-color: #3d3d3d;
-  box-shadow: 0 10px 20px 15px rgba(67, 229, 247);
+  box-shadow: 0 2px 20px 10px rgba(67, 229, 247);
   animation: 3s SOS;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
-  margin-left: 40px;
 }
 .btntext{
-  position: relative;
-  left: -80px;
+  position: fixed;
   font-family: matrixFont;
   color: #ECECEC;
   font-size: 50px;
-  top: 8px;
+  z-index: 1;
 }
+
 @keyframes SOS{
   from{
     transform:  rotate(0deg);
@@ -77,11 +96,6 @@
   to{
     transform:  rotate(360deg);
   }
-}
-.btntext{
-  display: flex;
-  position: relative;
-
 }
 .App {
   text-align: center;
@@ -98,14 +112,6 @@ p{
   text-align: left;
   flex-direction: column;
   margin-bottom: 10px;
-}
-button{
-  margin: 10px;
-  width: 150px;
-  background-color: orange;
-  color: aliceblue;
-  height: 35px;
-  border: 3px solid rgb(224, 224, 224);
 }
 .albumImg{
   width: 150px;
@@ -164,9 +170,9 @@ button{
   font-size: 2rem;
 }
 .ipadView{
+  margin-top: 20px;
   justify-content: center;
   align-items: center;
-  background-color: rgb(44, 44, 44);
   border-radius: 20px;
   padding: 10px;
 }
@@ -181,63 +187,69 @@ button{
 
 .controller{
   width: 680px;
-  height: 420px;
-  background-color: #3d3d3d;
+  height: 470px;
+  background-color: #fff;
   border-radius: 20px;
   margin: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
+  box-shadow: 5px 5px 12px 1px #a5a4a4;
 }
 .slider{
   min-width: 250px;
-  height: 20px;
+  height: 35px;
   transform: rotate(-90deg);
 }
 .slider1{
   position: relative;
-  left: 240px;
+  left: 350px;
 }
 .slider2{
   position: relative;
-  left: 120px;
+  left: 210px;
 }
 .slider3{
   position: relative;
-  left: 0px;
+  left: 70px;
 }
 .slider4{
   position: relative;
-  left: -120px;
+  left: -70px;
 }
 .slider5{
   position: relative;
-  left: -240px;
+  left: -210px;
+}
+.slider6{
+  position: relative;
+  left: -350px;
 }
 .radar-box-area{
+  margin: 10px;
+  border-radius: 20px;
+  box-shadow: 5px 5px 12px 1px #a5a4a4;
   width: 200px;
   height: 200px;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
 }
 .radar-box{
-  width: 200px;
-  height: 200px;
+  width: 180px;
+  height: 180px;
   position: relative;
   border-radius: 50%;
-  background-color: green;
   overflow: hidden;
   background-image: radial-gradient(circle,
-  #024e02 5%, #0f0 , #024e02 6%,#024e02 10%, #0f0 ,#024e02 11%,
-  #024e02 15%, #0f0 , #024e02 16%,#024e02 20%, #0f0 ,#024e02 21%,
-  #024e02 25%, #0f0 , #024e02 26%,#024e02 30%, #0f0 ,#024e02 31%,
-  #024e02 35%, #0f0 , #024e02 36%,#024e02 40%, #0f0 ,#024e02 41%,
-  #024e02 45%, #0f0 , #024e02 46%,#024e02 50%, #0f0 ,#024e02 51%,
-  #024e02 55%, #0f0 , #024e02 56%,#024e02 60%, #0f0 ,#024e02 61%,
-  #024e02 65%, #0f0 , #024e02 66%,#024e02 70%, #0f0 ,#024e02 71%,
-  #024e02 75%, #0f0 , #024e02 76%,#024e02 80%, #0f0 ,#024e02 81%
+  #1f7079 5%, #41e5f7 , #1f7079 6%,#1f7079 10%, #41e5f7 ,#1f7079 11%,
+  #1f7079 15%, #41e5f7 , #1f7079 16%,#1f7079 20%, #41e5f7 ,#1f7079 21%,
+  #1f7079 25%, #41e5f7 , #1f7079 26%,#1f7079 30%, #41e5f7 ,#1f7079 31%,
+  #1f7079 35%, #41e5f7 , #1f7079 36%,#1f7079 40%, #41e5f7 ,#1f7079 41%,
+  #1f7079 45%, #41e5f7 , #1f7079 46%,#1f7079 50%, #41e5f7 ,#1f7079 51%,
+  #1f7079 55%, #41e5f7 , #1f7079 56%,#1f7079 60%, #41e5f7 ,#1f7079 61%,
+  #1f7079 65%, #41e5f7 , #1f7079 66%,#1f7079 70%, #41e5f7 ,#1f7079 71%,
+  #1f7079 75%, #41e5f7 , #1f7079 76%,#1f7079 80%, #41e5f7 ,#1f7079 81%
   );
 }
 .radar{
@@ -247,8 +259,8 @@ button{
   width: 50%;
   height: 40%;
   transform: translateY(-100%);
-  border-bottom: #0f0 solid 2px;
-  background: linear-gradient(325deg,#0f0,transparent,transparent);
+  border-bottom: #41e5f7 solid 2px;
+  background: linear-gradient(325deg,#41e5f7,transparent,transparent);
   animation: 5s radarAnim;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
@@ -270,7 +282,7 @@ button{
   width: 10px;
   height: 7px;
   border-radius: 5px;
-  background-color: #0f0;
+  background-color: #41e5f7;
   transform: rotate(45deg);
   animation: 10s gps_signal;
   visibility: hidden;
@@ -292,10 +304,10 @@ button{
   content: "";
   width: 5px;
   height: 7px;
-  border: 2px solid #0f0;
+  border: 2px solid #41e5f7;
   left: 50%;
   margin-left: -5px;
-  background: #024e02;
+  background: #1f7079;
 }
 .gps_signal::after{
   bottom: 100%;
@@ -330,9 +342,8 @@ button{
 .compass {
 	width: 200px;
 	height: 200px;
-	background-color: rgba(32, 194, 14, 0.8);
-	border-radius: 100%;
-	background-image: -webkit-linear-gradient(top, #F7F7F7, #ECECEC);
+  box-shadow: 5px 5px 12px 1px #a5a4a4;
+  border-radius: 100%;
   position: relative;
   margin: 0 auto;
 }
@@ -340,10 +351,9 @@ button{
 .compass-inner {
 	width: 200px;
 	height: 200px;
-	background-color: #3D3D3D;
+	background-color: #fff;
 	border-radius: 100%;
 	position: relative;
-	border: 3px solid rgba(32, 194, 14);
 }
 
 .main-arrow {
@@ -369,7 +379,7 @@ button{
 	height: 0;
 	border-left: 15px solid transparent;
 	border-right: 15px solid transparent;
-	border-bottom: 50px solid rgba(32, 194, 14);
+	border-bottom: 50px solid rgb(67 229 247);
 	position: relative;
 }
 
@@ -388,7 +398,7 @@ button{
 .north {
 	font-size: 36px;
 	font-family: matrixFont;
-	color: rgba(32, 194, 14, 0.8);
+	color: rgb(67 229 247);
 	position: absolute;
 	left: 82px;
 }
@@ -396,7 +406,7 @@ button{
 .east {
 	font-size: 36px;
 	font-family: matrixFont;
-	color: rgba(32, 194, 14, 0.8);
+	color: rgb(67 229 247);
 	position: absolute;
   top: 80px;
   right: 10px;
@@ -405,7 +415,7 @@ button{
 .west {
 	font-size: 36px;
 	font-family: matrixFont;
-	color: rgba(32, 194, 14, 0.8);
+	color: rgb(67 229 247);
 	position: absolute;
   top: 80px;
   left: 10px;
@@ -414,7 +424,7 @@ button{
 .south {
 	font-size: 36px;
 	font-family: matrixFont;
-	color: rgba(32, 194, 14, 0.8);
+	color: rgb(67 229 247);
 	position: absolute;
   left: 82px;
   top: 140px;

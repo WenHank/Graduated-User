@@ -90,7 +90,7 @@ const RainStream = (props) => {
     <div
       style={{
         fontFamily: "matrixFont",
-        color: "#20c20e",
+        color: "#43e5f7",
         writingMode: "vertical-rl",
         textOrientation: "upright",
         userSelect: "none",
@@ -98,7 +98,7 @@ const RainStream = (props) => {
         marginTop: topPadding,
         marginLeft: -15,
         marginRight: -15,
-        textShadow: "0px 0px 8px rgba(32, 194, 14, 0.8)",
+        textShadow: "0px 0px 8px #43e5f7",
         fontSize: 30,
       }}
     >
@@ -141,13 +141,15 @@ const MatrixRain = (props) => {
       style={{
         width: "460px",
         height: "200px",
-        background: "#3d3d3d",
+        background: "#fff",
         overflow: "ignore",
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-around",
         overflow: "hidden",
         borderRadius: "20px",
+        margin: "10px",
+        boxShadow: "5px 2px 12px 1px #a5a4a4",
       }}
       ref={containerRef}
     >
@@ -228,12 +230,12 @@ function App() {
           <MatrixRain />
           <div className="ButtonGroups">
             <div className="sosBtn"></div>
-            <h2 className="btntext">SOS</h2>
+            <div className="btntext">SOS</div>
           </div>
         </div>
         <div className="row-class">
           <div className="col-class">
-            <div className="col-class">
+            <div className="circleContainer">
               <div className="row-class">
                 <div className="firstCircle">
                   <AnimatedProgressProvider
@@ -337,6 +339,7 @@ function App() {
             <input type="range" className="slider slider3" />
             <input type="range" className="slider slider4" />
             <input type="range" className="slider slider5" />
+            <input type="range" className="slider slider6" />
           </div>
         </div>
       </div>
@@ -954,12 +957,7 @@ function App() {
       </div>
     );
   };
-  return (
-    <div className="App">
-      <h1>User</h1>
-      {page === 1 ? <Part1 /> : <Part2 />}
-    </div>
-  );
+  return <div className="App">{page === 1 ? <Part1 /> : <Part2 />}</div>;
 }
 
 export default App;
